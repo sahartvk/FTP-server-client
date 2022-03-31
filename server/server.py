@@ -39,7 +39,7 @@ def pwd():
 
 def list():
     l = os.scandir(os.getcwd())
-    sock.send(str(len(file_name)).encode())
+    sock.send(str(sys.getsizeof(file_name)).encode())
     total_directory_size = 0
     for t in l:
         sock.send(str(sys.getsizeof(t)).encode())
