@@ -31,6 +31,20 @@ def help():
     return
 
 
+def pwd():
+    # sock.send("ok".encode())
+
+    path = os.getcwd()
+    # name of root
+    # print(path)
+    rest = path.partition("p1")[2]
+    print(f"    {rest}")
+    # print(rest)
+    sock.send(rest.encode())
+
+    return
+
+
 def dwld():
     sock.send("ok".encode())
 
@@ -82,14 +96,14 @@ def dwld():
 
 while True:
     command = sock.recv(1024).decode()
-    print(command)
+    print(f"command:    {command}")
 
     if command == "help":
         help()
     elif command == "list":
         pass
     elif command == "pwd":
-        pass
+        pwd()
     elif command[0:2] == "cd":
         pass
     elif command[0:4] == "dwld":

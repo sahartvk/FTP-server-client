@@ -21,6 +21,15 @@ def help():
     return
 
 
+def pwd():
+    clientSocket.send("pwd".encode())
+    # clientSocket.recv(1024)
+    path = clientSocket.recv(1024).decode()
+    print(f"    {path}")
+
+    return
+
+
 def dwld(file_name: str):
     clientSocket.send("dwld".encode())
     clientSocket.recv(1024)
@@ -76,7 +85,7 @@ while True:
     elif command == "list":
         pass
     elif command == "pwd":
-        pass
+        pwd()
     elif command[0:2] == "cd":
         pass
     elif command[0:4] == "dwld":
