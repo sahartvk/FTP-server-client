@@ -20,16 +20,29 @@ def help():
 
     return
 
-
 def pwd():
     clientSocket.send("pwd".encode())
-    # clientSocket.recv(1024)
-    path = clientSocket.recv(1024).decode()
-    print(f"    {path}")
+    pwd_size=int(clientSocket.recv(4).decode())
+    pwd=clientSocket.recv(pwd_size).decode()
+    print(pwd)
+    return 
 
+def list():
+    clientSocket.send("list".encode())
+    files=clientSocket.recv(1024)
+    clientSocket.send(str(sys.getsizeof(files)).encode())
+    for f in files[:-1]:
+        file_name_size = int(clientSocket.recv(4).decode())
+        file_name=clientSocket.recv(file_name_size).decode()
+        file_size=int(clientSocket.recv(4).decode())
+        
+        print (f"\t{file_name} - {file_size}b")
+        clientSocket.send("ok".encode())
+    total_size=int(clientSocket.recv(4).decode())
+    print(f"total directory size: {total_size}b")
     return
 
-
+    
 def dwld(file_name: str):
     clientSocket.send("dwld".encode())
     clientSocket.recv(1024)
@@ -83,7 +96,7 @@ while True:
     if command == "help":
         help()
     elif command == "list":
-        pass
+        list()
     elif command == "pwd":
         pwd()
     elif command[0:2] == "cd":

@@ -30,21 +30,28 @@ def help():
 
     return
 
-
 def pwd():
-    # sock.send("ok".encode())
-
-    path = os.getcwd()
-    # name of root
-    # print(path)
-    rest = path.partition("p1")[2]
-    print(f"    {rest}")
-    # print(rest)
-    sock.send(rest.encode())
-
+    path=str(os.getcwd())
+    sock.send(str(sys.getsizeof(path)).encode())
+    sock.send(path.encode())
+    print("Successfully sent file listing \n")
     return
 
-
+def list():
+    l = os.scandir(os.getcwd())
+    sock.send(str(len(file_name)).encode())
+    total_directory_size = 0
+    for t in l:
+        sock.send(str(sys.getsizeof(t)).encode())
+        sock.send(t.encode())
+        sock.send(str(os.path.getsize(t)).encode())
+        total_directory_size += os.path.getsize(t)
+        
+    sock.send(total_directory_size.encode())    
+    print("Successfully sent file listing")    
+   
+    return 
+    
 def dwld():
     sock.send("ok".encode())
 
@@ -96,12 +103,12 @@ def dwld():
 
 while True:
     command = sock.recv(1024).decode()
-    print(f"command:    {command}")
+    print(command)
 
     if command == "help":
         help()
     elif command == "list":
-        pass
+        list()
     elif command == "pwd":
         pwd()
     elif command[0:2] == "cd":
