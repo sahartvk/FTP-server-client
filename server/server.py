@@ -32,28 +32,18 @@ def help():
 
 
 def pwd():
-    sock.send("ok".encode())
-
-    path = str(os.getcwd())
+    path=str(os.getcwd().partition("FTP-server-client")[2])
     sock.send(str(sys.getsizeof(path)).encode())
     sock.send(path.encode())
-    print("Successfully sent file listing \n")
+    print(f"{path}")
+    print("Successfully sent directory \n")
     return
 
-
 def size(path):
-
-    # initialize the size
     total_size = 0
-
-    # use the walk() method to navigate through directory tree
     for dirpath, dirnames, filenames in os.walk(path):
         for i in filenames:
-
-            # use join to concatenate all the components of path
             f = os.path.join(dirpath, i)
-
-            # use getsize to generate size in bytes and add it to the total size
             total_size += os.path.getsize(f)
     return total_size
 
@@ -66,7 +56,7 @@ def list():
     with os.scandir(os.getcwd()) as entries:
         for entry in entries:
             if entry.is_dir():
-                temp += "dir  "
+                temp += " ￿ "
                 temp += str(entry.name)
                 temp += "     "
                 temp += str(size(os.path.join(os.getcwd(), entry)))
@@ -74,20 +64,17 @@ def list():
                 total_size += size(os.path.join(os.getcwd(), entry))
 
             elif entry.is_file():
-                temp += "file  "
+                temp += "   "
                 temp += str(entry.name)
                 temp += "     "
                 temp += str(os.path.getsize(entry))
                 temp += "\n"
                 total_size += os.path.getsize(entry)
 
-    print("1")
+    
     sock.send(str(len(temp.encode('utf-8'))).encode())
-    # sock.recv(1024)
     sock.send(temp.encode())
-    # sock.recv(1024)
     sock.send(str(total_size).encode())
-    # sock.recv(1024)
     return
 
 
@@ -174,6 +161,8 @@ while True:
     elif command[0:4] == "dwld":
         dwld()
     elif command == "quit":
-        pass
+        print("exiting ...")
+        sock.close()
+        break
     else:
-        pass
+        print("....")

@@ -13,39 +13,29 @@ print("connected to server successfully")
 
 def help():
     clientSocket.send("help".encode())
-
     help_size = int(clientSocket.recv(4).decode())
     help = clientSocket.recv(help_size).decode()
     print(help)
-
     return
-
 
 def pwd():
     clientSocket.send("pwd".encode())
-    clientSocket.recv(1024)
-
-    pwd_size = int(clientSocket.recv(4).decode())
-    pwd = clientSocket.recv(pwd_size).decode()
+    pwd_size=int(clientSocket.recv(4).decode())
+    pwd=clientSocket.recv(pwd_size).decode()
     print(pwd)
-    return
-
+    return 
 
 def list():
     clientSocket.send("list".encode())
     clientSocket.recv(1024)
-
+    
     size_ = int(clientSocket.recv(1024).decode())
-    # clientSocket.send("ok".encode())
     list_ = clientSocket.recv(size_).decode()
-    # clientSocket.send("ok".encode())
     total_size = clientSocket.recv(1024).decode()
-    # clientSocket.send("ok".encode())
 
     print(list_)
-    print(f"total size :   {total_size}")
+    print(f"total size :   {total_size}\n")
     return
-
 
 def cd(directory_name: str):
     clientSocket.send("cd".encode())
@@ -81,7 +71,7 @@ def dwld(file_name: str):
 
     dwld_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     dwld_sock.connect((server_ip, new_port))
-    print("connected to new port successfully")
+    # connected to new port successfully
 
     # 4
     print("downloading...")
@@ -97,7 +87,7 @@ def dwld(file_name: str):
     dwld_sock.recv(1024)
     dwld_sock.send("ok".encode())
     dwld_sock.close()
-    print("download socket closed")
+    # download socket closed
 
     return
 
@@ -107,7 +97,7 @@ help()
 
 while True:
 
-    command = input(">>")
+    command = input("$ ")
     command.lower()
 
     if command == "help":
@@ -123,6 +113,10 @@ while True:
         if command[5:]:
             dwld(command[5:])
     elif command == "quit":
-        pass
+        print("exiting...")
+        clientSocket.send("quit".encode())
+        clientSocket.close()
+        break
     else:
-        print("invalid command!")
+        print("invalid command")
+        clientSocket.send("invalid command".encode())
