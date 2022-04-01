@@ -31,18 +31,14 @@ def pwd():
 
 def list():
     clientSocket.send("list".encode())
-    files = clientSocket.recv(1024)
-    clientSocket.send(str(sys.getsizeof(files)).encode())
-    for f in files[:-1]:
-        file_name_size = int(clientSocket.recv(4).decode())
-        file_name = clientSocket.recv(file_name_size).decode()
-        file_size = int(clientSocket.recv(4).decode())
+    clientSocket.recv(1024)
 
-        print(f"\t{file_name} - {file_size}b")
-        clientSocket.send("ok".encode())
-    total_size = int(clientSocket.recv(4).decode())
-    print(f"total directory size: {total_size}b")
-    return
+    size = int(clientSocket.recv(1024).decode())
+    list_ = clientSocket.recv(size).decode()
+    total_size = clientSocket.recv(1024).decode()
+
+    print(list)
+    print(total_size)
 
 
 def cd(directory_name: str):

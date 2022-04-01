@@ -39,20 +39,51 @@ def pwd():
     return
 
 
+def size(path):
+
+    # initialize the size
+    total_size = 0
+
+    # use the walk() method to navigate through directory tree
+    for dirpath, dirnames, filenames in os.walk(path):
+        for i in filenames:
+
+            # use join to concatenate all the components of path
+            f = os.path.join(dirpath, i)
+
+            # use getsize to generate size in bytes and add it to the total size
+            total_size += os.path.getsize(f)
+    return total_size
+
+
 def list():
-    l = os.scandir(os.getcwd())
-    sock.send(str(sys.getsizeof(file_name)).encode())
-    total_directory_size = 0
-    for t in l:
-        sock.send(str(sys.getsizeof(t)).encode())
-        sock.send(t.encode())
-        sock.send(str(os.path.getsize(t)).encode())
-        total_directory_size += os.path.getsize(t)
+    sock.send("ok".encode())
 
-    sock.send(total_directory_size.encode())
-    print("Successfully sent file listing")
+    temp = ""
+    total_size = 0
+    with os.scandir(os.getcwd()) as entries:
+        for entry in entries:
+            if entry.is_dir():
+                temp += "dir  "
+                temp += str(entry.name)
+                temp += "     "
+                temp += str(size(os.path.join(os.getcwd(), entry)))
+                temp += "\n"
+                total_size += size(os.path.join(os.getcwd(), entry))
 
-    return
+            elif entry.is_file():
+                temp += "file  "
+                temp += str(entry.name)
+                temp += "     "
+                temp += str(os.path.getsize(entry))
+                temp += "\n"
+                total_size += os.path.getsize(entry)
+
+    # print(temp)
+    # print(total_size)
+    sock.send(str(size(temp)).encode())
+    sock.send(temp.encode())
+    sock.send(str(total_size).encode())
 
 
 def cd():
