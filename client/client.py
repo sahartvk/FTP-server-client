@@ -20,29 +20,44 @@ def help():
 
     return
 
+
 def pwd():
     clientSocket.send("pwd".encode())
-    pwd_size=int(clientSocket.recv(4).decode())
-    pwd=clientSocket.recv(pwd_size).decode()
+    pwd_size = int(clientSocket.recv(4).decode())
+    pwd = clientSocket.recv(pwd_size).decode()
     print(pwd)
-    return 
+    return
+
 
 def list():
     clientSocket.send("list".encode())
-    files=clientSocket.recv(1024)
+    files = clientSocket.recv(1024)
     clientSocket.send(str(sys.getsizeof(files)).encode())
     for f in files[:-1]:
         file_name_size = int(clientSocket.recv(4).decode())
-        file_name=clientSocket.recv(file_name_size).decode()
-        file_size=int(clientSocket.recv(4).decode())
-        
-        print (f"\t{file_name} - {file_size}b")
+        file_name = clientSocket.recv(file_name_size).decode()
+        file_size = int(clientSocket.recv(4).decode())
+
+        print(f"\t{file_name} - {file_size}b")
         clientSocket.send("ok".encode())
-    total_size=int(clientSocket.recv(4).decode())
+    total_size = int(clientSocket.recv(4).decode())
     print(f"total directory size: {total_size}b")
     return
 
-    
+
+def cd(directory_name: str):
+    clientSocket.send("cd".encode())
+    clientSocket.recv(1024)
+
+    clientSocket.send(directory_name.encode())
+
+    status = clientSocket.recv(1024).decode()
+    if status == "invalid":
+        print("invalid directory")
+    elif status == "changed":
+        print(f"changed to {directory_name}")
+
+
 def dwld(file_name: str):
     clientSocket.send("dwld".encode())
     clientSocket.recv(1024)
@@ -100,7 +115,8 @@ while True:
     elif command == "pwd":
         pwd()
     elif command[0:2] == "cd":
-        pass
+        if command[3:]:
+            cd(command[3:])
     elif command[0:4] == "dwld":
         if command[5:]:
             dwld(command[5:])

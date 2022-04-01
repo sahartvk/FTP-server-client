@@ -30,12 +30,14 @@ def help():
 
     return
 
+
 def pwd():
-    path=str(os.getcwd())
+    path = str(os.getcwd())
     sock.send(str(sys.getsizeof(path)).encode())
     sock.send(path.encode())
     print("Successfully sent file listing \n")
     return
+
 
 def list():
     l = os.scandir(os.getcwd())
@@ -46,12 +48,32 @@ def list():
         sock.send(t.encode())
         sock.send(str(os.path.getsize(t)).encode())
         total_directory_size += os.path.getsize(t)
-        
-    sock.send(total_directory_size.encode())    
-    print("Successfully sent file listing")    
-   
-    return 
-    
+
+    sock.send(total_directory_size.encode())
+    print("Successfully sent file listing")
+
+    return
+
+
+def cd():
+    sock.send("ok".encode())
+
+    directory = sock.recv(1024).decode()
+
+    path = os.getcwd()
+    print(f" current path : {path}")
+
+    if os.path.isdir(os.path.join(path, directory)):
+        os.chdir(os.path.join(path, directory))
+        sock.send("changed".encode())
+    else:
+        print("invalid directory")
+        sock.send("invalid".encode())
+
+    path = os.getcwd()
+    print(f" current path : {path}")
+
+
 def dwld():
     sock.send("ok".encode())
 
@@ -112,7 +134,7 @@ while True:
     elif command == "pwd":
         pwd()
     elif command[0:2] == "cd":
-        pass
+        cd()
     elif command[0:4] == "dwld":
         dwld()
     elif command == "quit":
