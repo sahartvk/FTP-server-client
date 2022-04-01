@@ -32,6 +32,8 @@ def help():
 
 
 def pwd():
+    sock.send("ok".encode())
+
     path = str(os.getcwd())
     sock.send(str(sys.getsizeof(path)).encode())
     sock.send(path.encode())
@@ -79,11 +81,14 @@ def list():
                 temp += "\n"
                 total_size += os.path.getsize(entry)
 
-    # print(temp)
-    # print(total_size)
-    sock.send(str(size(temp)).encode())
+    print("1")
+    sock.send(str(len(temp.encode('utf-8'))).encode())
+    # sock.recv(1024)
     sock.send(temp.encode())
+    # sock.recv(1024)
     sock.send(str(total_size).encode())
+    # sock.recv(1024)
+    return
 
 
 def cd():

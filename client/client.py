@@ -23,6 +23,8 @@ def help():
 
 def pwd():
     clientSocket.send("pwd".encode())
+    clientSocket.recv(1024)
+
     pwd_size = int(clientSocket.recv(4).decode())
     pwd = clientSocket.recv(pwd_size).decode()
     print(pwd)
@@ -33,12 +35,16 @@ def list():
     clientSocket.send("list".encode())
     clientSocket.recv(1024)
 
-    size = int(clientSocket.recv(1024).decode())
-    list_ = clientSocket.recv(size).decode()
+    size_ = int(clientSocket.recv(1024).decode())
+    # clientSocket.send("ok".encode())
+    list_ = clientSocket.recv(size_).decode()
+    # clientSocket.send("ok".encode())
     total_size = clientSocket.recv(1024).decode()
+    # clientSocket.send("ok".encode())
 
-    print(list)
-    print(total_size)
+    print(list_)
+    print(f"total size :   {total_size}")
+    return
 
 
 def cd(directory_name: str):
