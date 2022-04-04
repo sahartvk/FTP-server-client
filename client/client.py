@@ -13,22 +13,24 @@ print("connected to server successfully")
 
 def help():
     clientSocket.send("help".encode())
-    help_size = int(clientSocket.recv(4).decode())
+    help_size = int(clientSocket.recv(1024).decode())
     help = clientSocket.recv(help_size).decode()
     print(help)
     return
 
+
 def pwd():
     clientSocket.send("pwd".encode())
-    pwd_size=int(clientSocket.recv(4).decode())
-    pwd=clientSocket.recv(pwd_size).decode()
+    pwd_size = int(clientSocket.recv(1024).decode())
+    pwd = clientSocket.recv(pwd_size).decode()
     print(pwd)
-    return 
+    return
+
 
 def list():
     clientSocket.send("list".encode())
     clientSocket.recv(1024)
-    
+
     size_ = int(clientSocket.recv(1024).decode())
     list_ = clientSocket.recv(size_).decode()
     total_size = clientSocket.recv(1024).decode()
@@ -36,6 +38,7 @@ def list():
     print(list_)
     print(f"total size :   {total_size}\n")
     return
+
 
 def cd(directory_name: str):
     clientSocket.send("cd".encode())
@@ -59,7 +62,7 @@ def dwld(file_name: str):
     clientSocket.send(file_name.encode())
 
     # 2
-    file_size = int(clientSocket.recv(4).decode())
+    file_size = int(clientSocket.recv(1024).decode())
     if file_size == -1:
         print("there is no file with that name!")
         return
@@ -68,7 +71,6 @@ def dwld(file_name: str):
 
     # 3
     new_port = int(clientSocket.recv(1024).decode())
-
     dwld_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     dwld_sock.connect((server_ip, new_port))
     # connected to new port successfully

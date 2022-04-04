@@ -32,12 +32,13 @@ def help():
 
 
 def pwd():
-    path=str(os.getcwd().partition("FTP-server-client")[2])
+    path = str(os.getcwd().partition("FTP-server-client")[2])
     sock.send(str(sys.getsizeof(path)).encode())
     sock.send(path.encode())
     print(f"{path}")
     print("Successfully sent directory \n")
     return
+
 
 def size(path):
     total_size = 0
@@ -71,7 +72,6 @@ def list():
                 temp += "\n"
                 total_size += os.path.getsize(entry)
 
-    
     sock.send(str(len(temp.encode('utf-8'))).encode())
     sock.send(temp.encode())
     sock.send(str(total_size).encode())
@@ -119,7 +119,6 @@ def dwld():
     # generate a random number bitween 3000 to 50000 for port number
     randport = random.randint(3000, 50000)
     sock.send(str(randport).encode())
-
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # a new tcp connection for downloading
     serverSocket.bind((server_ip, randport))
@@ -129,7 +128,7 @@ def dwld():
 
     # 4
     # sending
-    print("sendin file...")
+    print("sending file...")
     rfile = open(file_name, "rb")
     file = rfile.read()
     dwld_sock.send(file)
