@@ -5,7 +5,7 @@ import random
 
 
 server_ip = '127.0.0.1'
-server_port = 1234
+server_port = 2121
 
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serverSocket.bind((server_ip, server_port))
@@ -25,6 +25,7 @@ def help():
     DWLD file_path:    download file
     QUIT:   exit
     """
+    sock.recv(1024)
     sock.send(str(sys.getsizeof(help)).encode())
     sock.send(help.encode())
 
@@ -32,6 +33,7 @@ def help():
 
 
 def pwd():
+    sock.recv(1024)
     path = str(os.getcwd().partition("FTP-server-client")[2])
     sock.send(str(sys.getsizeof(path)).encode())
     sock.send(path.encode())
@@ -52,6 +54,7 @@ def size(path):
 def list():
     sock.send("ok".encode())
 
+    sock.recv(1024)
     temp = ""
     total_size = 0
     with os.scandir(os.getcwd()) as entries:

@@ -3,7 +3,7 @@ import sys
 
 
 server_ip = '127.0.0.1'
-server_port = 1234
+server_port = 2121
 
 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print("connecting...")
@@ -13,6 +13,8 @@ print("connected to server successfully")
 
 def help():
     clientSocket.send("help".encode())
+
+    clientSocket.send("ok".encode())
     help_size = int(clientSocket.recv(1024).decode())
     help = clientSocket.recv(help_size).decode()
     print(help)
@@ -21,6 +23,7 @@ def help():
 
 def pwd():
     clientSocket.send("pwd".encode())
+    clientSocket.send("ok".encode())
     pwd_size = int(clientSocket.recv(1024).decode())
     pwd = clientSocket.recv(pwd_size).decode()
     print(pwd)
@@ -31,6 +34,7 @@ def list():
     clientSocket.send("list".encode())
     clientSocket.recv(1024)
 
+    clientSocket.send("ok".encode())
     size_ = int(clientSocket.recv(1024).decode())
     list_ = clientSocket.recv(size_).decode()
     total_size = clientSocket.recv(1024).decode()
