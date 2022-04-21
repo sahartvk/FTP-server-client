@@ -25,7 +25,6 @@ def help():
     DWLD file_path:    download file
     QUIT:   exit
     """
-    sock.recv(1024)
     sock.send(str(sys.getsizeof(help)).encode())
     sock.send(help.encode())
 
@@ -33,7 +32,6 @@ def help():
 
 
 def pwd():
-    sock.recv(1024)
     path = str(os.getcwd().partition("FTP-server-client")[2])
     sock.send(str(sys.getsizeof(path)).encode())
     sock.send(path.encode())
@@ -54,13 +52,12 @@ def size(path):
 def list():
     sock.send("ok".encode())
 
-    sock.recv(1024)
     temp = ""
     total_size = 0
     with os.scandir(os.getcwd()) as entries:
         for entry in entries:
             if entry.is_dir():
-                temp += " ￿ "
+                temp += "   "
                 temp += str(entry.name)
                 temp += "     "
                 temp += str(size(os.path.join(os.getcwd(), entry)))
