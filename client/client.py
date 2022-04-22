@@ -2,8 +2,8 @@ import socket
 import sys
 
 
-server_ip = '6.tcp.ngrok.io'
-server_port = 19443
+server_ip = '127.0.0.1'
+server_port = 21121
 
 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print("connecting...")
